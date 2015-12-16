@@ -305,6 +305,8 @@ class EdifyGenerator(object):
         raise ValueError(
             "don't know how to write \"%s\" partitions" % p.fs_type)
 
+  def ClearMiscCommand(self):
+	return;
   def SetPermissions(self, fn, uid, gid, mode, selabel, capabilities):
     """Set file ownership and permissions."""
     if not self.info.get("use_set_metadata", False):

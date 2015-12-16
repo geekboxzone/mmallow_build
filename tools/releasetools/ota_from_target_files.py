@@ -1632,11 +1632,6 @@ def main(argv):
       output_zip = zipfile.ZipFile(temp_zip_file, "w",
                                    compression=zipfile.ZIP_DEFLATED)
 
-    cache_size = OPTIONS.info_dict.get("cache_size", None)
-    if cache_size is None:
-      raise RuntimeError("can't determine the cache partition size")
-    OPTIONS.cache_size = cache_size
-
     if OPTIONS.incremental_source is None:
       WriteFullOTAPackage(input_zip, output_zip)
       if OPTIONS.package_key is None:

@@ -1555,7 +1555,7 @@ endif
 ifneq ($(TARGET_PRODUCT),sdk)
 ifeq ($(filter generic%,$(TARGET_DEVICE)),)
 ifneq ($(TARGET_NO_KERNEL),true)
-ifneq ($(recovery_fstab),)
+ifneq ($(recovery_fstab_mtd),)
 
 # -----------------------------------------------------------------
 # OTA update package
@@ -1574,7 +1574,6 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS)
 	@echo "Package OTA: $@"
 	$(hide) PATH=$(foreach p,$(INTERNAL_USERIMAGES_BINARY_PATHS),$(p):)$$PATH MKBOOTIMG=$(MKBOOTIMG) \
 	   ./build/tools/releasetools/ota_from_target_files -v \
-	   --block \
 	   -p $(HOST_OUT) \
 	   -k $(KEY_CERT_PAIR) \
 	   $(if $(OEM_OTA_CONFIG), -o $(OEM_OTA_CONFIG)) \
