@@ -808,6 +808,11 @@ else
 recovery_font := $(call include-path-for, recovery)/fonts/12x22.png
 endif
 
+ifeq ($(TARGET_ROCKCHIP_PCBATEST),true)
+pcba_core := $(call intermediates-dir-for,EXECUTABLES,pcba_core)/pcba_core
+endif
+recovery_contents := $(TOPDIR)device/rockchip/common/recovery_contents.sh
+
 recovery_resources_private := $(strip $(wildcard $(TARGET_DEVICE_DIR)/recovery/res))
 recovery_resource_deps := $(shell find $(recovery_resources_common) \
   $(recovery_resources_private) -type f)
@@ -889,6 +894,7 @@ define build-recoveryimage-target
   $(hide) rm -rf $(TARGET_RECOVERY_ROOT_OUT)/res/*
   $(hide) cp -rf $(recovery_resources_common)/* $(TARGET_RECOVERY_ROOT_OUT)/res
   $(hide) cp -f $(recovery_font) $(TARGET_RECOVERY_ROOT_OUT)/res/images/font.png
+  $(recovery_contents) $(TARGET_PRODUCT) $(PRODUCT_OUT) $(TARGET_BOARD_PLATFORM) $(TARGET_ROCKCHIP_PCBATEST) $(TARGET_ARCH)
   $(hide) $(foreach item,$(recovery_resources_private), \
     cp -rf $(item) $(TARGET_RECOVERY_ROOT_OUT)/)
   $(hide) $(foreach item,$(recovery_fstab), \
@@ -922,7 +928,8 @@ $(INSTALLED_RECOVERYIMAGE_TARGET): $(MKBOOTFS) $(MKBOOTIMG) $(MINIGZIP) \
 		$(recovery_fstab) \
 		$(recovery_fstab_mtd) \
 		$(recovery_fstab_emmc) \
-		$(RECOVERY_INSTALL_OTA_KEYS)
+		$(RECOVERY_INSTALL_OTA_KEYS) \
+		$(pcba_core)
 		$(call build-recoveryimage-target, $@)
 
 $(RECOVERY_RESOURCE_ZIP): $(INSTALLED_RECOVERYIMAGE_TARGET)
