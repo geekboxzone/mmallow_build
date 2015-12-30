@@ -817,9 +817,7 @@ else
 recovery_font := $(call include-path-for, recovery)/fonts/12x22.png
 endif
 
-ifeq ($(TARGET_ROCKCHIP_PCBATEST),true)
 pcba_core := $(call intermediates-dir-for,EXECUTABLES,pcba_core)/pcba_core
-endif
 recovery_contents := $(TOPDIR)device/rockchip/common/recovery_contents.sh
 
 recovery_resources_private := $(strip $(wildcard $(TARGET_DEVICE_DIR)/recovery/res))
