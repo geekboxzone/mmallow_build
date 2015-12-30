@@ -775,6 +775,15 @@ INTERNAL_RECOVERYIMAGE_FILES := $(filter $(TARGET_RECOVERY_OUT)/%, \
     $(ALL_DEFAULT_INSTALLED_MODULES))
 
 recovery_initrc := $(call include-path-for, recovery)/etc/init.rc
+recovery_initrc_private := $(TARGET_DEVICE_DIR)/recovery/etc/init.rc
+recovery_initrc_private := $(if $(wildcard $(recovery_initrc_private)), $(recovery_initrc_private),\
+    device/rockchip/common/recovery/etc/init.rc)
+recovery_initrc_emmc_private := $(TARGET_DEVICE_DIR)/recovery/etc/init.bootmode.emmc.rc
+recovery_initrc_emmc_private := $(if $(wildcard $(recovery_initrc_emmc_private)), $(recovery_initrc_emmc_private),\
+    device/rockchip/common/recovery/etc/init.bootmode.emmc.rc)
+recovery_initrc_mtd_private := $(TARGET_DEVICE_DIR)/recovery/etc/init.bootmode.unknown.rc
+recovery_initrc_mtd_private := $(if $(wildcard $(recovery_initrc_mtd_private)), $(recovery_initrc_mtd_private),\
+    device/rockchip/common/recovery/etc/init.bootmode.unknown.rc)
 recovery_sepolicy := $(call intermediates-dir-for,ETC,sepolicy.recovery)/sepolicy.recovery
 recovery_kernel := $(INSTALLED_KERNEL_TARGET) # same as a non-recovery system
 recovery_ramdisk := $(PRODUCT_OUT)/ramdisk-recovery.img
@@ -890,6 +899,9 @@ define build-recoveryimage-target
   $(hide) rm -f $(TARGET_RECOVERY_ROOT_OUT)/sepolicy
   $(hide) cp -f $(recovery_sepolicy) $(TARGET_RECOVERY_ROOT_OUT)/sepolicy
   $(hide) cp $(TARGET_ROOT_OUT)/init.recovery.*.rc $(TARGET_RECOVERY_ROOT_OUT)/ || true # Ignore error when the src file doesn't exist.
+	$(hide)cp -f $(recovery_initrc_private) $(TARGET_RECOVERY_ROOT_OUT)/
+	$(hide)cp -f $(recovery_initrc_emmc_private) $(TARGET_RECOVERY_ROOT_OUT)/
+	$(hide)cp -f $(recovery_initrc_mtd_private) $(TARGET_RECOVERY_ROOT_OUT)/
   $(hide) mkdir -p $(TARGET_RECOVERY_ROOT_OUT)/res
   $(hide) rm -rf $(TARGET_RECOVERY_ROOT_OUT)/res/*
   $(hide) cp -rf $(recovery_resources_common)/* $(TARGET_RECOVERY_ROOT_OUT)/res
