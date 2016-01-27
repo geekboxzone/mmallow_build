@@ -302,11 +302,32 @@ class EdifyGenerator(object):
           self.script.append(
               'package_extract_file("%(fn)s", "%(device)s");' % args)
       else:
-        raise ValueError(
-            "don't know how to write \"%s\" partitions" % p.fs_type)
+        raise ValueError("don't know how to write \"%s\" partitions" % (p.fs_type,))
+
+  def WriteRawParameterImage(self, mount_point, fn):
+    """Write the given package file into the partition for the given
+    mount point."""
+
+    fstab = self.info["fstab"]
+    if fstab:
+      p = fstab[mount_point]
+      partition_type = common.PARTITION_TYPES[p.fs_type]
+      args = {'device': p.device, 'fn': fn}
+      if partition_type == "MTD":
+        self.script.append(
+            'write_raw_parameter_image(package_extract_file("%(fn)s"), "%(device)s");'
+            % args)
+      elif partition_type == "EMMC":
+        self.script.append(
+            'write_raw_parameter_image(package_extract_file("%(fn)s"), "%(device)s");'
+            % args)
+      else:
+        raise ValueError("don't know how to write \"%s\" partitions" % (p.fs_type,))
 
   def ClearMiscCommand(self):
-	return;
+    """clear misc command"""
+    self.script.append('clear_misc_command();')
+
   def SetPermissions(self, fn, uid, gid, mode, selabel, capabilities):
     """Set file ownership and permissions."""
     if not self.info.get("use_set_metadata", False):

@@ -561,6 +561,10 @@ else	# TARGET_NO_KERNEL
 #       kernel-less inputs.
 INSTALLED_BOOTIMAGE_TARGET := $(INSTALLED_RAMDISK_TARGET)
 endif
+INSTALLED_LOADER_MISC_TARGET := $(TARGET_DEVICE_DIR)/ota/loader/misc_loadercmd.img
+INSTALLED_LOADER_TARGET := $(strip $(wildcard $(TARGET_DEVICE_DIR)/ota/loader/RK*Loader*.bin))
+INSTALLED_NEW_LOADER_TARGET := $(PRODUCT_OUT)/RKLoader_new.bin
+INSTALLED_PARAMETER_TARGET := $(strip $(wildcard $(TARGET_DEVICE_DIR)/ota/parameter/parameter*))
 
 # -----------------------------------------------------------------
 # NOTICE files
@@ -1338,6 +1342,7 @@ DISTTOOLS :=  $(HOST_OUT_EXECUTABLES)/minigzip \
   $(HOST_OUT_EXECUTABLES)/zipalign \
   $(HOST_OUT_EXECUTABLES)/bsdiff \
   $(HOST_OUT_EXECUTABLES)/imgdiff \
+  $(HOST_OUT_EXECUTABLES)/remkloader \
   $(HOST_OUT_JAVA_LIBRARIES)/dumpkey.jar \
   $(HOST_OUT_JAVA_LIBRARIES)/signapk.jar \
   $(HOST_OUT_JAVA_LIBRARIES)/BootSignature.jar \
@@ -1440,6 +1445,8 @@ endif
 $(BUILT_TARGET_FILES_PACKAGE): \
 		$(INSTALLED_BOOTIMAGE_TARGET) \
 		$(INSTALLED_RADIOIMAGE_TARGET) \
+		$(INSTALLED_LOADER_TARGET) \
+		$(INSTALLED_PARAMETER_TARGET) \
 		$(INSTALLED_RECOVERYIMAGE_TARGET) \
 		$(INSTALLED_SYSTEMIMAGE) \
 		$(INSTALLED_USERDATAIMAGE_TARGET) \
@@ -1497,6 +1504,21 @@ endif
 	$(hide) $(foreach t,$(INSTALLED_RADIOIMAGE_TARGET),\
 	            mkdir -p $(zip_root)/RADIO; \
 	            $(ACP) $(t) $(zip_root)/RADIO/$(notdir $(t));)
+ifeq ($(INSTALLED_LOADER_TARGET),)
+	$(info No RK Loader for TARGET_DEVICE $(TARGET_DEVICE) to otapackage)
+else
+	@# Contents of the rk loader bin
+	$(hide) mkdir -p $(zip_root)/LOADER
+	$(hide) $(HOST_OUT_EXECUTABLES)/remkloader '$(INSTALLED_LOADER_TARGET)' $(INSTALLED_NEW_LOADER_TARGET)
+	$(hide) cat $(INSTALLED_LOADER_MISC_TARGET) $(INSTALLED_NEW_LOADER_TARGET) > $(zip_root)/LOADER/RKLoader.img 
+endif
+ifeq ($(INSTALLED_PARAMETER_TARGET),)
+	$(info No parameter for TARGET_DEVICE $(TARGET_DEVICE) to otapackage)
+else
+	$(hide) rm -rf $(zip_root)/PARAMETER
+	$(hide) mkdir -p $(zip_root)/PARAMETER
+	$(hide) $(HOST_OUT_EXECUTABLES)/mkparameter '$(INSTALLED_PARAMETER_TARGET)' $(zip_root)/PARAMETER/parameter
+endif	
 	@# Contents of the system image
 	$(hide) $(call package_files-copy-root, \
 		$(SYSTEMIMAGE_SOURCE_DIR),$(zip_root)/SYSTEM)
