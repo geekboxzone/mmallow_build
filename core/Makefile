@@ -843,6 +843,10 @@ recovery_fstab_mtd := $(if $(wildcard $(recovery_fstab_mtd)), $(recovery_fstab_m
 recovery_fstab_emmc := $(strip $(wildcard $(TARGET_DEVICE_DIR)/recovery.emmc.fstab))
 recovery_fstab_emmc := $(if $(wildcard $(recovery_fstab_emmc)), $(recovery_fstab_emmc),\
     device/rockchip/common/recovery.emmc.fstab)
+ifneq ($(filter rk3366, $(strip $(TARGET_BOARD_PLATFORM))), )
+recovery_fstab_emmc := $(if $(wildcard $(recovery_fstab_emmc)), $(recovery_fstab_emmc),\
+    device/rockchip/$(TARGET_BOARD_PLATFORM)/recovery.emmc.fstab)
+endif
 endif
 # Named '.dat' so we don't attempt to use imgdiff for patching it.
 RECOVERY_RESOURCE_ZIP := $(TARGET_OUT)/etc/recovery-resource.dat
