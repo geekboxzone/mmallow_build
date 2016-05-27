@@ -331,16 +331,21 @@ def BuildBootableImage(sourcedir, fs_config_file, info_dict=None):
   assert p1.returncode == 0, "mkbootfs of %s ramdisk failed" % (sourcedir,)
   assert p2.returncode == 0, "minigzip of %s ramdisk failed" % (sourcedir,)
 
+  cmd = ["truncate", "-s", "%4", ramdisk_img.name]
+  p3 = Run(cmd)
+  p3.communicate()
+  assert p3.returncode == 0, "truncate ramdisk failed"
+
+
   # use MKBOOTIMG from environ, or "mkbootimg" if empty or not set
   mkbootimg = os.getenv('MKBOOTIMG') or "mkbootimg"
 
   cmd = [mkbootimg, "--kernel", os.path.join(sourcedir, "kernel")]
-
-  fn = os.path.join(sourcedir, "second")
+  fn = os.path.join(sourcedir, "resource.img")
+  #fn = os.path.join(sourcedir, "second")
   if os.access(fn, os.F_OK):
     cmd.append("--second")
     cmd.append(fn)
-
   fn = os.path.join(sourcedir, "cmdline")
   if os.access(fn, os.F_OK):
     cmd.append("--cmdline")
@@ -374,6 +379,12 @@ def BuildBootableImage(sourcedir, fs_config_file, info_dict=None):
   assert p.returncode == 0, "mkbootimg of %s image failed" % (
       os.path.basename(sourcedir),)
 
+  sign_cmd = ["drmsigntool", img.name, "build/target/product/security/privateKey.bin"]
+  p4 = Run(sign_cmd)
+  p4.communicate()
+  assert p4.returncode == 0, "mkbootimg of %s image failed" % (
+          os.path.basename(sourcedir),)
+
   if (info_dict.get("boot_signer", None) == "true" and
       info_dict.get("verity_key", None)):
     path = "/" + os.path.basename(sourcedir).lower()
@@ -403,7 +414,6 @@ def BuildBootableImage(sourcedir, fs_config_file, info_dict=None):
     # Clean up the temp files.
     img_unsigned.close()
     img_keyblock.close()
-
   img.seek(os.SEEK_SET, 0)
   data = img.read()
 
