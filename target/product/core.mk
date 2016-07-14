@@ -22,17 +22,10 @@
 
 PRODUCT_PACKAGES += \
     BasicDreams \
-    Browser \
-    Calendar \
     CalendarProvider \
     CaptivePortalLogin \
     CertInstaller \
-    Contacts \
-    DeskClock \
     DocumentsUI \
-    DownloadProviderUi \
-    Email \
-    ExactCalculator \
     Exchange2 \
     ExternalStorageProvider \
     FusedLocation \
@@ -47,7 +40,6 @@ PRODUCT_PACKAGES += \
     libpac \
     PrintSpooler \
     ProxyHandler \
-    QuickSearchBox \
     Settings \
     SharedStorageBackup \
     Telecom \
@@ -55,4 +47,15 @@ PRODUCT_PACKAGES += \
     VpnDialogs \
     MmsService
 
+ifneq ($(strip $(TARGET_BOARD_PLATFORM_PRODUCT)), vr)
+   PRODUCT_PACKAGES += \
+	 Browser \
+	 Calendar \
+	 Contacts \
+	 DeskClock \
+	 DownloadProviderUi \
+	 Email \
+    	 ExactCalculator \
+         QuickSearchBox
+endif
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core_base.mk)
