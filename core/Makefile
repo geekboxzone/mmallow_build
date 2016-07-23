@@ -809,6 +809,10 @@ else
 recovery_densities := mdpi
 endif
 
+ifneq ($(filter rk3399, $(strip $(TARGET_BOARD_PLATFORM))), )
+    recovery_densities := xhdpi
+endif
+
 ifneq (,$(wildcard $(recovery_resources_common)-$(recovery_density)))
 recovery_resources_common := $(recovery_resources_common)-$(recovery_density)
 else
