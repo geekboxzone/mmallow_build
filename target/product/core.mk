@@ -48,14 +48,17 @@ PRODUCT_PACKAGES += \
     MmsService
 
 ifneq ($(strip $(TARGET_BOARD_PLATFORM_PRODUCT)), vr)
-   PRODUCT_PACKAGES += \
-	 Browser \
-	 Calendar \
-	 Contacts \
-	 DeskClock \
-	 DownloadProviderUi \
-	 Email \
-    	 ExactCalculator \
-         QuickSearchBox
+    PRODUCT_PACKAGES += \
+		Browser \
+		DownloadProviderUi \
+		ExactCalculator
+    ifneq ($(strip $(TARGET_BOARD_PLATFORM_PRODUCT)), box)
+        PRODUCT_PACKAGES += \
+            Calendar \
+            Contacts \
+            DeskClock \
+            Email \
+            QuickSearchBox
+    endif
 endif
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core_base.mk)

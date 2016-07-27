@@ -27,10 +27,13 @@ PRODUCT_PACKAGES := \
 
 ifneq ($(strip $(TARGET_BOARD_PLATFORM_PRODUCT)), vr)
 PRODUCT_PACKAGES += \
-    Music	\
     Camera2 \
-    Gallery2 \
-    MusicFX 
+    Gallery2
+    ifneq ($(strip $(TARGET_BOARD_PLATFORM_PRODUCT)), box)
+    PRODUCT_PACKAGES += \
+        Music	\
+        MusicFX 
+    endif
 endif
 
 PRODUCT_PACKAGES += \
