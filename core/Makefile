@@ -565,6 +565,8 @@ INSTALLED_LOADER_MISC_TARGET := $(TARGET_DEVICE_DIR)/ota/loader/misc_loadercmd.i
 INSTALLED_LOADER_TARGET := $(strip $(wildcard $(TARGET_DEVICE_DIR)/ota/loader/RK*Loader*.bin))
 INSTALLED_NEW_LOADER_TARGET := $(PRODUCT_OUT)/RKLoader_new.bin
 INSTALLED_PARAMETER_TARGET := $(strip $(wildcard $(TARGET_DEVICE_DIR)/ota/parameter/parameter*))
+INSTALLED_UBOOT_TARGET := $(strip $(wildcard u-boot/uboot.img))
+INSTALLED_TRUST_TARGET := $(strip $(wildcard u-boot/trust.img))
 
 # -----------------------------------------------------------------
 # NOTICE files
@@ -1555,6 +1557,18 @@ ifdef TARGET_PREBUILT_RESOURCE
 	$(info package add resource.img to BOOT and RECOVERY)
 	$(hide) cp $(TARGET_PREBUILT_RESOURCE) $(zip_root)/BOOT/resource.img
 	$(hide) cp $(TARGET_PREBUILT_RESOURCE) $(zip_root)/RECOVERY/resource.img
+endif
+
+ifeq ($(INSTALLED_UBOOT_TARGET),)
+	$(info No uboot for uboot/uboot.img to otapackage)
+else
+	$(hide) cp $(INSTALLED_UBOOT_TARGET) $(zip_root)/uboot.img
+endif
+
+ifeq ($(INSTALLED_TRUST_TARGET),)
+	$(info No trust for uboot/trust.img to otapackage)
+else
+	$(hide) cp $(INSTALLED_TRUST_TARGET) $(zip_root)/trust.img
 endif
 
 ifdef BOARD_FLASH_BLOCK_SIZE
