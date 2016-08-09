@@ -26,7 +26,6 @@ PRODUCT_PACKAGES += \
     CaptivePortalLogin \
     CertInstaller \
     DocumentsUI \
-    Exchange2 \
     ExternalStorageProvider \
     FusedLocation \
     InputDevices \
@@ -38,14 +37,11 @@ PRODUCT_PACKAGES += \
     PicoTts \
     PacProcessor \
     libpac \
-    PrintSpooler \
     ProxyHandler \
     Settings \
     SharedStorageBackup \
-    Telecom \
-    TeleService \
+	TeleService \
     VpnDialogs \
-    MmsService
 
 ifneq ($(strip $(TARGET_BOARD_PLATFORM_PRODUCT)), vr)
     PRODUCT_PACKAGES += \
@@ -58,7 +54,11 @@ ifneq ($(strip $(TARGET_BOARD_PLATFORM_PRODUCT)), vr)
             Contacts \
             DeskClock \
             Email \
-            QuickSearchBox
+            QuickSearchBox \
+            Exchange2 \
+            Telecom \
+            MmsService \
+            PrintSpooler
     endif
 endif
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core_base.mk)

@@ -24,7 +24,6 @@ PRODUCT_PACKAGES += \
     ContactsProvider \
     DefaultContainerService \
     Home \
-    TelephonyProvider \
     UserDictionaryProvider \
     atrace \
     libandroidfw \
@@ -61,5 +60,11 @@ PRODUCT_PACKAGES += \
     mdnsd \
     requestsync \
     wifi-service
+
+ifneq ($(strip $(TARGET_BOARD_PLATFORM_PRODUCT)), box)
+    PRODUCT_PACKAGES += \
+        TelephonyProvider
+endif
+
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core_minimal.mk)
