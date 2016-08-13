@@ -40,7 +40,6 @@ PRODUCT_PACKAGES += \
     ProxyHandler \
     Settings \
     SharedStorageBackup \
-	TeleService \
     VpnDialogs \
 
 ifneq ($(strip $(TARGET_BOARD_PLATFORM_PRODUCT)), vr)
@@ -57,6 +56,7 @@ ifneq ($(strip $(TARGET_BOARD_PLATFORM_PRODUCT)), vr)
             QuickSearchBox \
             Exchange2 \
             Telecom \
+			TeleService \
             MmsService \
             PrintSpooler
     endif
