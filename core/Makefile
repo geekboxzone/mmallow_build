@@ -129,7 +129,8 @@ ifeq (,$(strip $(BUILD_FINGERPRINT)))
     # the Android system property length limit (PROPERTY_VALUE_MAX=92).
     BF_BUILD_NUMBER := $(USER)$(shell date +%m%d%H%M)
   else
-    BF_BUILD_NUMBER := $(BUILD_NUMBER)
+    #BF_BUILD_NUMBER := $(BUILD_NUMBER)
+    BF_BUILD_NUMBER := $(USER)$(shell date +%m%d%H%M)
   endif
   BUILD_FINGERPRINT := $(PRODUCT_BRAND)/$(TARGET_PRODUCT)/$(TARGET_DEVICE):$(PLATFORM_VERSION)/$(BUILD_ID)/$(BF_BUILD_NUMBER):$(TARGET_BUILD_VARIANT)/$(BUILD_VERSION_TAGS)
 endif
